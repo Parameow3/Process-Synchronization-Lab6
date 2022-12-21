@@ -1,39 +1,34 @@
+import java.util.concurrent.Phaser;
 
 public class MultiThread {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException{
 
         // In the method, create a BankAccount object and named it account
-        BankAccount account = new BankAccount(0.0);
+        BankAccount account = new BankAccount(1000.0);
 
-        // Create a Father object and named it father. Pass the account object as the parameter
-        Father father = new Father(account);
+        // Using Phaser
+        Phaser phaser = new Phaser();
+        phaser.register();
 
-        // Create a Son object and named it son. Pass the account object as the parameter
-        Son son = new Son(account);
+        // Instantiate Father and Son object
+        Father father = new Father(account, phaser);
+        Son son = new Son(account, phaser);
 
-        // Call the start method of the father object
+        // Balance before father and son withdraw or deposit
+        System.out.println("-------------------");
+        System.out.println("Balance: " + account.getBalance() + "$  |");
+        System.out.println("-------------------");
+
+        // Start father and son object
         father.start();
-
-        // Call the start method of the son object
         son.start();
 
-        // Call the join method of the father object
-        try {
-            father.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // simulation of some actual work
+        Thread.sleep(10);
 
-        // Call the join method of the son object
-        try {
-            son.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Print out the balance of the account object
-        System.out.println(account.getBalance());
+        // Now open the phaser barrier
+        phaser.arriveAndAwaitAdvance();
 
 
     }
