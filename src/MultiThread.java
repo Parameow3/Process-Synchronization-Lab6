@@ -29,7 +29,7 @@ public class MultiThread {
 
         // Now open the phaser barrier
         phaser.arriveAndAwaitAdvance();
-
+        // okay
 
     }
 }
